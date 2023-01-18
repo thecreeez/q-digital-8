@@ -1,46 +1,36 @@
 <?php
 
+spl_autoload_register(function ($class) {
+	if (stripos($class, 'Controller')) {
+		require_once 'application/controllers/' . $class . '.php';
+	} else if (stripos($class, 'Model')) {
+		require_once 'application/models/' . $class . '.php';
+	}
+});
+
 class Route {
 	static function start()
 	{
-		$controller_name = 'Main';
-		$action_name = 'index';
+		$controllerName = 'MainController';
+		$actionName = 'index';
 		
 		$routes = explode('/', $_SERVER['REQUEST_URI']);
 
 		// получаем имя контроллера
-		if ( !empty($routes[1]) ) {	
-			$controller_name = $routes[1];
+		if (!empty($routes[1])) {	
+			$controllerName = ucfirst(strtolower($routes[1])).'Controller';
 		}
 		
 		// получаем имя метода
-		if ( !empty($routes[2]) ) {
-			$action_name = $routes[2];
+		if (!empty($routes[2])) {
+			$actionName = strtolower($routes[2]);
 		}
 
 		// добавляем префиксы
-		$model_name = 'Model_'.$controller_name;
-		$controller_name = 'Controller_'.$controller_name;
-		$action_name = 'action_'.$action_name;
-
-		$model_file = strtolower($model_name).'.php';
-		$model_path = "application/models/".$model_file;
-		if (file_exists($model_path)) {
-			include "application/models/".$model_file;
-		}
-
-		// Подключение контроллера
-		$controller_file = strtolower($controller_name).'.php';
-		$controller_path = "application/controllers/".$controller_file;
-		if (file_exists($controller_path)) {
-			include $controller_path;
-		} else {
-			Route::ErrorPage404();
-		}
+		$actionName = 'action_'.$actionName;
 		
-		// создаем контроллер
-		$controller = new $controller_name;
-		$action = $action_name;
+		$controller = new $controllerName;
+		$action = $actionName;
 		
 		if(method_exists($controller, $action)) {
 			$controller->$action();

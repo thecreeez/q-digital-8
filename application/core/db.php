@@ -21,56 +21,8 @@ class Database {
             exit();
         }
     }   
-
-    public function getUserByLogin($login) {
-        $sql = "SELECT * FROM `users` WHERE `users`.`login` = ?";
-
-        return $this->query($sql, array($login));
-    }
-
-    public function insertUser($login, $password) {
-        $sql = "INSERT INTO `users` (`login`, `password`) VALUES (?, ?)";
-
-        return $this->query($sql, array($login, $password));
-    }
-
-    public function getTasks($login) {
-        $sql = "SELECT `tasks`.`id`, `tasks`.`description`, `tasks`.`status` FROM `tasks` WHERE `tasks`.`users_id` = (SELECT `users`.`id` FROM `users` WHERE `users`.`login` = ?)";
-
-        return $this->query($sql, array($login));
-    }
-
-    public function addTask($usersId, $description) {
-        $sql = "INSERT INTO `tasks` (`users_id`, `description`) VALUES (?, ?)";
-
-        return $this->query($sql, array($usersId, $description));
-    }
-
-    public function changeTaskStatus($usersId, $taskId) {
-        $sql = "UPDATE `tasks` SET `tasks`.`status` = `tasks`.`status` ^ 1 WHERE `tasks`.`users_id` = ? AND `tasks`.`id` = ?";
-
-        return $this->query($sql, array($usersId, $taskId));
-    }
-
-    public function removeTask($usersId, $taskId) {
-        $sql = "DELETE FROM `tasks` WHERE `tasks`.`users_id` = ? AND `tasks`.`id` = ?";
-
-        return $this->query($sql, array($usersId, $taskId));
-    }
-
-    public function removeAllTasks($usersId) {
-        $sql = "DELETE FROM `tasks` WHERE `tasks`.`users_id` = ?";
-
-        return $this->query($sql, array($usersId));
-    }
-
-    public function readyAllTasks($usersId) {
-        $sql = "UPDATE `tasks` SET `tasks`.`status` = 1 WHERE `tasks`.`users_id` = ? AND `tasks`.`status` = 0";
-
-        return $this->query($sql, array($usersId));
-    }
-
-    private function query($sql, $params) {
+    
+    public function query($sql, $params) {
         $stmt = self::$connection->prepare($sql);
 
         $stmt->execute($params);
