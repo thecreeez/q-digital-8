@@ -1,12 +1,12 @@
 <?php
 
 class TaskController extends Controller {
-	function __construct() {
-		$this->model = new TaskModel();
-		$this->view = new View();
-	}
+    function __construct() {
+        $this->model = new TaskModel();
+        $this->view = new View();
+    }
 
-	function action_post() {
+    function action_post() {
         if (!isset($_SESSION['login'])) {
             return header("Location: /");
         }
@@ -31,7 +31,7 @@ class TaskController extends Controller {
         }
 
         header("Location: /");
-	}
+    }
 
     private function add($user) {
         if ($_POST['taskDescription'] == "")
